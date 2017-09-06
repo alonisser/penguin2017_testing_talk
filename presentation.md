@@ -11,7 +11,7 @@ class: center, middle
 [twitter](alonisser@twitter.com), [medium](https://medium.com/@alonisser/), 
 [sad frontend il](http://sadfrontendil.tumblr.com/)
 
-#####Recommanded! also read my political blog: [דגל אדום](degeladom@wordpress.com)
+####Recommanded! also read my political blog: [דגל אדום](degeladom@wordpress.com)
 ---
 
 # TDD in one sentence 
@@ -33,6 +33,8 @@ class: center, middle
 * Lots of over zealous people fighting about "pure" TDD
  
 * A lot has changed on how we build software
+
+* Still lots and lots of untested new code is written every day. why?
  
 ---
 
@@ -96,7 +98,7 @@ Selenium and similar tools:
 
 * Too much mocking is dangerous, we can break the class but the tests still pass.
 
-* Passing unit test [don't validate](https://twitter.com/thepracticaldev/status/845638950517706752?lang=en) the problem domain solved.
+* Passing unit tests [doesn't validate](https://twitter.com/thepracticaldev/status/845638950517706752?lang=en) the problem domain solved.
  
 * Might lead to tight coupling of tests to implementation.
 
@@ -143,7 +145,7 @@ functional vs Integration vs system vs .. tests
 
 * Using the public api endpoints (http/socket/management commands/Message queue/ what ever).
 
-* Covering a **single** app/service, not inter app/service integration (That would be under **End To End** or **Integration** testing)
+* Covering a **single** app/service, not inter app/service integration (That would be under **End To End** or **System** testing)
 
 --
 
@@ -157,12 +159,13 @@ functional vs Integration vs system vs .. tests
 
 --
 
-* When we are using DB baked in "features" like Mongo GIS or Redis timeseries, The Db becomes "part" of the actual unit under test.
+* When we are using DB "baked in features" like Mongo GIS or Redis timeseries, The Db becomes "part" of the actual unit under test.
 
 --
 * SLOW? With a proper testing support in the framework, DB setup/rollback can be very fast (Like ROR testing over a transaction) Also parallel computing can go a long way in solving this kind of problems
 
-* SLOW? the tests might be a slower but developing with Modern Web framework is Faster then giving up on them. Which speed is more important?
+* SLOW? the tests might be a slower but developing with Modern Web framework is Faster then giving up on them. Which speed is more important? 
+Functional testing might be easier to get quick testing gains
 
 --
 
