@@ -6,43 +6,47 @@ class: center, middle
 
 ###why and how?
 
-[live presentation](https://alonisser.github.io/functional-testing-talk-penguin2017) <br/>
+[live presentation](https://alonisser.github.io/penguin2017_testing_talk) <br/>
 
 [twitter](alonisser@twitter.com), [medium](https://medium.com/@alonisser/), 
 [sad frontend il](http://sadfrontendil.tumblr.com/)
+
 #####Recommanded! also read my political blog: [דגל אדום](degeladom@wordpress.com)
 ---
 
 # TDD in one sentence 
 
 * Test Driven Development
+
+--
+
 * Red green refactor
+
+--
+
 * Please note: This does not say: Do only unit and unit are better
 
 ---
 
 # TDD revisited
 
-* Lots of over zealous people attacking 
-* Test "first" is not the same as "must test"
+* Lots of over zealous people fighting about "pure" TDD
+ 
+* A lot has changed on how we build software
  
 ---
 
 # Why tests?
 
 * Validate our code is actually doing what we expect.
+
 * Promotes good (better..) design, clearer api, decoupling.
+
 * Faster development cycles (Really!) catching bugs early and fast.
+
 * Ability to refactor (even a year later when the code does not look familiar anymore)
-* Ours users are not our QA "volunteers" .
 
-
----
-# The traditional view: The Test Pyramid
-
-* "Unit is fast" use unit
-* "DB is hot lava" avoid touching the real db in your tests at all cost.
-* Higher level tests are slow and brittle, don't do that, at least not too much.
+* Ours users are not our QA "volunteers" :( .
 
 ---
 
@@ -50,16 +54,28 @@ class: center, middle
 
 ![](https://martinfowler.com/bliki/images/testPyramid/test-pyramid.png)
 
----
 
+
+---
+# The traditional view: The Test Pyramid
+
+* "Unit is fast" use unit
+
+* "DB is hot lava" avoid touching the real db in your tests at all cost.
+
+* Higher level tests are slow and brittle, don't do that, at least not too much.
+
+---
 
 # The traditional view: Unit test
 
 * "Unit is fast" use unit
+
 * Thousands of unit tests in few seconds
+
 * low-level, focusing on a small part of the software system.
-* Lots of Unit testing practitioners *nowadays* advocate non sociable tests with mocking collaborating classes or even private methods.
-* low-level, focusing on a small part of the software system. 
+
+* Lots of Unit testing practitioners *nowadays* advocate **unit tests as non sociable (Isolated) tests with mocking collaborating classes or even private methods**.
 
 ---
 
@@ -67,70 +83,99 @@ class: center, middle
 
 Selenium and similar tools:
 * SLOW! 
+
 * BRITTLE. Broken easily on UI changes (Even with best practice patterns: page objects etc)
+
 * FLAKY. 5-10% failure due to "network" or "browser" conditions renders the tests (almost) worthless. 
 
 ---
 
 # The traditional view revisited: Problems With Unit testing
 
-* The trees and forest problem.
+* The trees and forest problem. Is the feature actually working?
+
 * Too much mocking is dangerous, we can break the class but the tests still pass.
-* Passing unit test [don't validate](https://twitter.com/thepracticaldev/status/845638950517706752?lang=en) the problem domain solved. 
+
+* Passing unit test [don't validate](https://twitter.com/thepracticaldev/status/845638950517706752?lang=en) the problem domain solved.
+ 
 * Might lead to tight coupling of tests to implementation.
+
 * Blamed for design monstrosities: "Test-induced design damage", needed to abstract all db and IO code out of tested classes. 
 
+* Following the previous point: To really test every part of our app with unit test we might need to give up on lot's of what Modern Web Framework give us (Django, Ror, etc)
 ---
 
 # The traditional view revisited: The Test Pyramid
 An often missed side note:
 
-"
-    The pyramid is based on the assumption that broad-stack tests are expensive, slow, and brittle compared to more focused tests, 
-    such as unit tests. While this is usually true, there are exceptions. If my high level tests are fast, reliable, 
-    and cheap to modify - then lower-level tests aren't needed.
 
-"
+
+>*The pyramid is based on the assumption that broad-stack tests are expensive, slow, and brittle compared to more focused tests, such as unit tests.
+ While this is usually true, there are exceptions.
+ If my high level tests are fast, reliable,  and cheap to modify - then lower-level tests aren't needed.*
+
+
+
+
+--
+## So. Can we write high level tests which are (relatively) fast, reliable and cheap to modify?
+
 
 ---
 
-# The traditional view revisited: functional testing - the new unit?
-
-* In an Interesting twitter "war" not long ago, @DHH (of Rails fame) claimed that the "DB is part of your app now" and DB hitting tests are the new unit.
---
-* When we are using DB "features" like Mongo GIS or Redis timeseries, then mocking the DB makes the tests faster but we don't really test the feature
-* With a proper testing support in the framework, DB setup/rollback can be very fast (Like ROR testing over a transaction)
---
-* Http is a leaking abstraction. 
- 
----
-
-# Naming issues
+# Functional Api driven testing: definitions
 
 functional vs Integration vs system vs .. tests
 * Looks like everyone "knows" (or has an opinion) what is a "unit" but the rest is a complete mess
 --
-* **MY** definition for functional tests are tests using the app public api (http/socket/Message queue/ what ever), "beneath" the UI.
+* **MY** definition for functional tests are:
+
+## Public Api driven testing for the app features from "outside" . 
+
 --
-* They cover a **single** app/service, not inter app/service integration (That would be under **End To End** or **Integration** testing)
 * Google testing blog suggests a test "size" taxonomy: small, medium. I'm equating "medium" tests to "functional" tests
+
 * We can also use Martin Fowler ["subcutaneoustest"](https://martinfowler.com/bliki/SubcutaneousTest.html) if we can pronounce it.
 
 ---
-# Naming issues
 
-Even more confusion 
-* UI Testing isn't the same thing as End to End testing
-* UI Testing isn't the same as Higher level testing.
+# Functional Api driven testing: definitions
+
+* Using the public api endpoints (http/socket/management commands/Message queue/ what ever).
+
+* Covering a **single** app/service, not inter app/service integration (That would be under **End To End** or **Integration** testing)
+
 --
-* UI components encapsulating logic can and should be tested using unit testing.
 
+* What it isn't: It's **not** about automated "UI clicking"
+
+---
+
+# functional testing - the new unit?
+
+* In an Interesting twitter "war" not long ago, @DHH (of Rails fame) claimed that the "DB is part of your app now" and DB hitting tests are the new unit.
+
+--
+
+* When we are using DB baked in "features" like Mongo GIS or Redis timeseries, The Db becomes "part" of the actual unit under test.
+
+--
+* SLOW? With a proper testing support in the framework, DB setup/rollback can be very fast (Like ROR testing over a transaction) Also parallel computing can go a long way in solving this kind of problems
+
+* SLOW? the tests might be a slower but developing with Modern Web framework is Faster then giving up on them. Which speed is more important?
+
+--
+
+* Software has leaking abstractions. (Http for example)  
+ 
 ---
 
 # Functional testing: High level overview
 
 * Testing features! not code constructs like classes or controllers.
+
 * Testing the public Api of a specific app. Not testing internals (Mostly)
+
 * Driving the tests through the app/service api, no internal mocking, replacing Only third party collaborators.
 
 ---
@@ -138,37 +183,143 @@ Even more confusion
 # Functional testing patterns by example
 
 * Meaningful Naming
+
+.code-example.pull-left[
+```python
+#bad
+def test_save(self):
+    # Test stuff
+```
+]
+
+.code-example.pull-right[
+```python
+#better
+def test_new_expense_creation(self):
+    # Test stuff
+```
+]
+
  
 ---
 
 # Functional testing patterns by example
 
 * verify zero state
- 
+
+.code-example.pull-left[
+```python
+#bad
+def test_new_expense(self):
+    self.when_something_happens()
+    assert len(expenses) > 1
+```
+]
+
+.code-example.pull-right[
+```python
+#better
+def test_new_expense(self):
+    assert not len(expenses) > 1
+    
+    self.when_something_happens()
+    assert len(expenses) > 1
+```
+]
+
+---
+
+
+# Functional testing patterns by example
+
+* [GivenWhenThen](http://martinfowler.com/bliki/GivenWhenThen.html) style methods 
+--
+
+* Given: setup that is before running action we are testing
+
+* When: what we do - usually what we test
+
+* Then: following verifications
+
+.code-example[
+```python
+#bad
+def test_new_expense_reporting(self):
+    self.client.post('my_supplier')
+    
+    res = self.client.post('my_expenses_endpoint', {var1:param1, var2:params2})
+    
+    expenses = Expense.objects.filter(supplier=param2)
+    assert len(expenses) > 0 
+```
+]
+
+.code-example[
+```python
+#better
+def test_new_expense_reporting(self):
+    self.verify_no_expenses_have_been_reported()
+    
+    supplier = self.given_the_supplier_exists(name)
+    
+    self.when_user_reports_an_expense(price, supplier)
+    
+    self.verify_new_expense_has_been_reported()
+```
+]
+
 ---
 
 # Functional testing patterns by example
 
 * Terse and readable tests.
+
 * Abstract technical test code to helper methods/classes
 
----
+* Use the Domain language
 
-# Functional testing patterns by example
+.code-example[
+```python
+#bad
+def test_new_expense(self):
+    res = self.client.get('my_expenses_endpoint?supplier=kravitz')
+    
+    assert res.ok
+    expenses = res.json()['data']['expenses']
+    assert len(expenses) > 1
+```
+]
 
-* BDD style methods (http://martinfowler.com/bliki/GivenWhenThen.html)
+.code-example[
+```python
+#better
+def test_new_expense(self):
+    
+    self.verify_expense_has_been_reported(supplier_name=kravitz)
+```
+]
 
 ---
 
 # Functional testing patterns by example: Setup and data creation
 
-* The problem with fixtures: Another thing we need to update
-
+* The problem with fixtures:  Yet Another thing we need to update 
+* Might work for simple, non changing configurations but Don't scale well with complexity
 ---
 
-# Functional testing patterns: Setup and data creation
+# Functional testing patterns by example: Setup and data creation
 
-* data builders using the app api
+* Solution: data builders encapsulating the app api
+
+```python
+person = PersonTestBuilder(name=alon)
+            .set_question(42)
+            .add_wish("The one ring")
+
+# the builder allows optional complex setup while still readable.
+```
+
+* Methods should still use the app public api 
  
 ---
 class: center, middle
@@ -181,7 +332,9 @@ class: center, middle
 # CI: Does A test exists if it does not run?
 
 * "Sure we have automatic tests"
-* Wiring up a Continues Integration process is a build in part of writing tests. 
+
+* Wiring up a Continues Integration process is a build in part of writing tests.
+ 
 * If you don't have one, **You don't really have tests**
  
 ---
@@ -190,36 +343,50 @@ class: center, middle
 # The commented out test anti pattern
 
 * "Sure we have automatic tests"
+
 --
+
 * OH
+
 * Remember: A flaky test is usually points to a problem in the test, BUT sometimes.. It serves as a warning from a subtle race condition, implicit order bug, etc
+
 --
+
 * Another one are [Assertion Free tests](https://martinfowler.com/bliki/AssertionFreeTesting.html)
  
 ---
 
-# Functional testing patterns: Replacing third party collaborators with fake collaborators
-* Wrapping third party collaborators in proxies. 
-* Proxies should not used directly but "injected" into our code
-Instead of this:
+class: center, middle
 
+# Advanced testing Patterns
+
+---
+
+# Functional testing patterns: Replacing third party collaborators with fake collaborators
+* Wrapping third party collaborators in proxies.
+ 
+* Proxies should not used directly but "injected" into our code
+
+.code-example[
 ```python
+# instead of this:
 class SMSDistributionHandler(BaseDistributionHandler):
     
     def __init__(self):
         self.sms_sender = SMSSendingService()
 
 ```
+]
+.code-example[
 
-Do this (if you don't have a better DI framework and not passing collaborators through CTOR  :)  ):
 ```python
+# Do this (if you don't have a better DI framework and not passing collaborators through constructor  :)  ):
 class SMSDistributionHandler(BaseDistributionHandler):
     
     def __init__(self):
         self.sms_sender = ServiceLocator.get_service('sms_sender')
 ```
-
-* Similar to the way Django allows us to replace some backends with fake backends in settings.py
+]
 
 ---
 
@@ -242,7 +409,11 @@ class TestApp(object):
 
 # Functional testing patterns: Globals
 
-Globals are also collaborators that you might want to control
+Ever exprienced a test failing between 12:00 - 02:00? 
+
+--
+
+Globals are also collaborators that you might need to control. For example:
 
 * Time
 
@@ -251,13 +422,13 @@ Globals are also collaborators that you might want to control
 (See GOOSG for more examples)
 
 ---
-# Functional testing patterns: Globals example - Handling global time
+
+# Functional testing patterns: Handling global time
 
 * No magical or implicit datetime/time handling in models (no auto_add_now)
-* use a programmable wrapper over ```datetime.now()```
+* use a programmable wrapper over <code>datetime.now()</code>
 
 ```python
-# -*- coding: utf-8 -*
 from django.utils import timezone
 
 time_settings = {
@@ -277,26 +448,87 @@ def now():
     return timezone.now()
 
 ```
-And in our our actual module
+---
+
+# Functional testing patterns: Handling global time
+
+* And in our our actual module
+
 ```python
 import clock
 clock.now()
 ```
+
+Or if we need to manipulate time
+```python
+clock.freeze_time(datetime.datetime(2017, 7, 12, 30. tzinfo=pytz.UTC)
+```
+
 ---
+
 # Functional testing patterns: Handling async results with a trace
 
-* 
+* How to assert against the result of async process "going out" - sending stuff etc..?
 
+--
+
+* Setup a trace that would receive outgoing messages in tests and check for expected result in recurring intervals
 
 ---
+
+# Functional testing patterns: Handling async results with a trace
+
+ 
+```javascript
+
+class Trace {
+  constructor() {
+    this._trace = []
+  }
+  add(item) {
+    this._trace.push(item);
+  }
+  contains(predicate, count, deferred, timer) {
+    var deferred = deferred || defer();
+    var timer = timer || 1;
+    var count = count ? count : 1;
+    var results = _.filter(this._trace,  (item) =>{
+      return predicate(item);
+    });
+
+    if (results.length == count) {
+      deferred.resolve(true);
+    } else {
+      if (timer < 10) {
+        timer++;
+        setTimeout( () =>{
+          return this.contains(predicate, count, deferred, timer)
+        }, 250);
+      } else {
+        deferred.reject(`Current trace contains: ${JSON.stringify(this._trace)}`);
+      }
+    }
+    return deferred.promise;
+  }
+ }
+```
+
+---
+
 # When do I unit? 
 
 * Certainly not advocating against unit testing. sometimes unit testing is more valuable/thorough and or quicker.
-For example:
-    * A component encapsulating logic: a rule engine or a calculator class for example.
-    Especially when there are lot's of decisions and possible permutations, functional testing this would be painful.
-    * A UI component with inner logic mapped to presentation: React/Angular/vue.js component, django template tag
-    * "Simple" helpers: A formatting helper for example, Id normalizer, etc. 
+
+--
+
+Good unit candidates:
+
+* A component encapsulating logic: a rule engine or a calculator class for example. 
+Especially when there are lot's of decisions and possible permutations, functional testing this would be painful.
+
+* A UI component with inner logic mapped to presentation: React/Angular/vue.js component, django template tag
+
+* "Simple" helpers: A formatting helper for example, Id normalizer, etc. 
 
 Generally speaking: Pure functional code encapsulated within a class/function, without IO, is a good candidate for unit testing
 ---
@@ -310,8 +542,10 @@ Generally speaking: Pure functional code encapsulated within a class/function, w
 
 # What you should take from this talk
 
-* Test you app. Please. 
+* Test you apps. Please.
+ 
 * Treat testing as an integral part of coding your app.
+
 * You'll thank me for this
 
 ---
@@ -336,13 +570,18 @@ Generally speaking: Pure functional code encapsulated within a class/function, w
 * [Working End TO End tests](https://www.symphonious.net/2015/04/30/making-end-to-end-tests-work/)
 
 ---
+class: center, middle
+
+# Questions?
+
+---
 
 class: center, middle
 
 # open source rocks!
 ## thanks for listening!
 
-[live presentation](https://alonisser.github.io/functional-testing-talk) <br/>
+[live presentation](https://alonisser.github.io/penguin2017_testing_talk) <br/>
 [twitter](alonisser@twitter.com), [medium](https://medium.com/@alonisser/), 
 [sad frontend il](http://sadfrontendil.tumblr.com/)
 
