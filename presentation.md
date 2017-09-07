@@ -364,7 +364,32 @@ class: center, middle
 # Advanced testing Patterns
 
 ---
+# Functional testing patterns: Third party collaborators
 
+* Replacing third party collaborators with fake collaborators
+
+.code-example[
+```python
+class SmsSenderProxy(ISmsSenderProxy):
+    # Real proxy, handles logic via third party collaborator
+    def send(message):
+        
+        return requests.post(data)
+```        
+]        
+        
+.code-example[
+```python
+class FakeSmsSenderProxy(ISmsSenderProxy):
+    # Replacement proxy
+    def __init__(self):
+        self.messages = []
+        
+    def send(self, message):
+        return requests.post(data)      
+```
+]
+---
 # Functional testing patterns: Replacing third party collaborators with fake collaborators
 * Wrapping third party collaborators in proxies.
  
