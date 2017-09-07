@@ -366,7 +366,11 @@ class: center, middle
 ---
 # Functional testing patterns: Third party collaborators
 
-* Replacing third party collaborators with fake collaborators
+* What are our words? "WE DO NOT MOCK"
+
+--
+
+* Instead of mocking: replacing third party collaborators with fake collaborators with the same Interface
 
 .code-example[
 ```python
