@@ -390,7 +390,7 @@ class FakeSmsSenderProxy(ISmsSenderProxy):
         self.messages = []
         
     def send(self, message):
-        return requests.post(data)      
+        self.messages.append(message)
 ```
 ]
 ---
